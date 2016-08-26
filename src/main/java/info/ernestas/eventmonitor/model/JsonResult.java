@@ -5,6 +5,10 @@ public class JsonResult<T> {
     private ResultStatus status;
     private T data;
 
+    public JsonResult() {
+
+    }
+
     public JsonResult(T data) {
         this(ResultStatus.SUCCESS, data);
     }
