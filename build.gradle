@@ -1,0 +1,70 @@
+group 'info.ernestas'
+version '2.0.1'
+
+apply plugin: 'java'
+apply plugin: 'war'
+
+sourceCompatibility = '1.8'
+targetCompatibility = '1.8'
+
+repositories {
+    mavenCentral()
+}
+
+war {
+    archiveName 'eventmonitor.war'
+}
+
+ext {
+    activeMQVersion = '5.14.0'
+    hibernateVersion = '5.0.7.Final'
+    springFrameworkVersion = '4.3.2.RELEASE'
+    slf4jVersion = '1.7.13'
+}
+
+dependencies {
+    compile "org.slf4j:slf4j-api:$slf4jVersion"
+    compile "org.slf4j:slf4j-log4j12:$slf4jVersion"
+    compile 'log4j:log4j:1.2.17'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.8.1'
+    compile "org.apache.activemq:activemq-spring:$activeMQVersion"
+    compile "org.apache.activemq:activemq-kahadb-store:$activeMQVersion"
+    compile "org.springframework:spring-jms:$springFrameworkVersion"
+    compile "org.springframework:spring-context:$springFrameworkVersion"
+    compile "org.springframework:spring-context-support:$springFrameworkVersion"
+    compile "org.springframework:spring-webmvc:$springFrameworkVersion"
+    compile "org.springframework:spring-webmvc:$springFrameworkVersion"
+    compile "org.springframework:spring-websocket:$springFrameworkVersion"
+    compile 'org.springframework.data:spring-data-jpa:1.10.2.RELEASE'
+    compile "org.hibernate:hibernate-entitymanager:$hibernateVersion"
+    compile "org.hibernate:hibernate-ehcache:$hibernateVersion"
+    compile 'javax.servlet:javax.servlet-api:3.1.0'
+    compile 'javax.servlet:jstl:1.2'
+    compile 'com.h2database:h2:1.4.191'
+
+    testCompile ('junit:junit:4.12') {
+        exclude group: 'org.hamcrest', module: 'hamcrest-core'
+    }
+    testCompile "org.springframework:spring-test:$springFrameworkVersion"
+    testCompile 'org.apache.tomcat.embed:tomcat-embed-websocket:8.5.4'
+    testCompile ('org.mockito:mockito-core:1.10.19') {
+        exclude group: 'org.hamcrest', module: 'hamcrest-core'
+    }
+    testCompile 'com.jayway.jsonpath:json-path:2.2.0'
+    testCompile 'com.google.code.gson:gson:2.7'
+    testCompile 'org.hamcrest:hamcrest-all:1.3'
+}
+
+tasks.withType(Test) {
+    // Add default Spring profile for all tests
+    systemProperty "spring.profiles.active", "test"
+
+    // Show full stacktrace when exception appears
+    testLogging {
+        exceptionFormat = 'full'
+    }
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.14'
+}
