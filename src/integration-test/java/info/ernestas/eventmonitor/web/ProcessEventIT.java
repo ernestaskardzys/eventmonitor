@@ -41,10 +41,11 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {ApplicationTestConfiguration.class})
@@ -53,9 +54,15 @@ public class ProcessEventIT extends AbstractTest {
 
     private static final int TOMCAT_PORT = 10000;
 
+    private static final int TWO_SECONDS = 2000;
+
+    private static final int SIX_SECONDS = 6000;
+
     private MockMvc mockMvc;
 
     private EmbeddedServer server;
+
+    private CountDownLatch lock = new CountDownLatch(1);
 
     @Autowired
     private WebApplicationContext webApplicationContext;
@@ -74,7 +81,7 @@ public class ProcessEventIT extends AbstractTest {
         server.stop();
     }
 
-    @Test
+    @Test(timeout = SIX_SECONDS)
     public void testProcessEvent() throws Exception {
         WebSocketStompClient stompClient = new WebSocketStompClient(getSockJsClient());
         stompClient.setMessageConverter(new MappingJackson2MessageConverter());
@@ -86,6 +93,11 @@ public class ProcessEventIT extends AbstractTest {
         Gson gson = new Gson();
 
         mockMvc.perform(MockMvcRequestBuilders.put("/rest").contentType(MediaType.APPLICATION_JSON_UTF8).content(gson.toJson(getEventDto())));
+
+        // Wait no more than two seconds
+        lock.await(TWO_SECONDS, TimeUnit.MILLISECONDS);
+
+        assertEquals(1, lock.getCount());
     }
 
     private SockJsClient getSockJsClient() throws Exception {
@@ -111,12 +123,12 @@ public class ProcessEventIT extends AbstractTest {
 
         @Override
         public void handleTransportError(StompSession session, Throwable exception) {
-            fail("WebSocket error");
+            lock.countDown();
         }
 
         @Override
         public void handleException(StompSession s, StompCommand c, StompHeaders h, byte[] p, Throwable ex) {
-            fail("WebSocket error");
+            lock.countDown();
         }
 
         @Override
@@ -136,8 +148,7 @@ public class ProcessEventIT extends AbstractTest {
         @Override
         public void handleFrame(StompHeaders headers, Object payload) {
             if (payload instanceof JsonResult) {
-                @SuppressWarnings("unchecked")
-                JsonResult<WebSocketDto> result = (JsonResult<WebSocketDto>) payload;
+                @SuppressWarnings("unchecked") JsonResult<WebSocketDto> result = (JsonResult<WebSocketDto>) payload;
                 assertEquals(ResultStatus.SUCCESS, result.getStatus());
                 String jsonString = new Gson().toJson(result.getData(), LinkedHashMap.class);
 
