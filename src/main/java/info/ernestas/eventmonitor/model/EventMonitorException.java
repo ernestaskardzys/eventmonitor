@@ -3,6 +3,7 @@ package info.ernestas.eventmonitor.model;
 public class EventMonitorException extends RuntimeException {
 
     public EventMonitorException() {
+        
     }
 
     public EventMonitorException(String message) {

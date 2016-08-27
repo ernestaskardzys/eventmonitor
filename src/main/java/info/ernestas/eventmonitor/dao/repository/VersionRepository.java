@@ -5,7 +5,7 @@ import org.springframework.data.repository.Repository;
 
 public interface VersionRepository extends Repository<Version, String> {
 
-    Long count();
+    long count();
 
     Version findFirst1ByOrderByVersionDesc();
 

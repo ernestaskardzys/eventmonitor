@@ -16,27 +16,26 @@ public class TomcatEmbeddedServer implements EmbeddedServer {
 
     private Tomcat tomcatServer;
 
-    private int port;
+    private String tomcatBaseDirectory;
 
     private Context context;
 
-    public TomcatEmbeddedServer(int port) {
-        this.port = port;
+    public TomcatEmbeddedServer(int port, String tomcatBaseDirectory) {
+        this.tomcatBaseDirectory = tomcatBaseDirectory;
 
         Connector connector = new Connector(Http11NioProtocol.class.getName());
-        connector.setPort(this.port);
+        connector.setPort(port);
 
         tomcatServer = new Tomcat();
-        tomcatServer.setPort(this.port);
+        tomcatServer.setBaseDir(tomcatBaseDirectory + "/tomcat." + port);
+        tomcatServer.setPort(port);
         tomcatServer.getService().addConnector(connector);
         tomcatServer.setConnector(connector);
     }
 
     @Override
     public void deployConfig(WebApplicationContext webApplicationContext) {
-        String javaTemporaryDirectory = System.getProperty("java.io.tmpdir");
-
-        context = tomcatServer.addContext(CONTEXT_ROOT, javaTemporaryDirectory);
+        context = tomcatServer.addContext(CONTEXT_ROOT, tomcatBaseDirectory);
         context.addApplicationListener(WsContextListener.class.getName());
         Tomcat.addServlet(context, DISPATCHER_SERVLET, new DispatcherServlet(webApplicationContext));
         context.addServletMapping(CONTEXT_ROOT, DISPATCHER_SERVLET);
