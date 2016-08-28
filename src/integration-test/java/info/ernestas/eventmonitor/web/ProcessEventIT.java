@@ -50,6 +50,8 @@ public class ProcessEventIT extends AbstractTest {
 
     private static final int SIX_SECONDS = 6000;
 
+    private static final int NO_ERROR = 1;
+
     @Rule
     public TemporaryFolder testFolder = new TemporaryFolder();
 
@@ -57,7 +59,7 @@ public class ProcessEventIT extends AbstractTest {
 
     private EmbeddedServer server;
 
-    private CountDownLatch errorCounter = new CountDownLatch(1);
+    private CountDownLatch errorCounter = new CountDownLatch(NO_ERROR);
 
     @Autowired
     private WebApplicationContext webApplicationContext;
