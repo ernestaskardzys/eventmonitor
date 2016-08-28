@@ -71,9 +71,9 @@ HTTP endpoint:
 - **/** or **/event-monitor** - main entry point for application
 
 REST endpoints:
--- **/rest/** (PUT method) - send a new event request to the application
--- **/rest/info** (GET method) - version information about the application
--- **/rest/health-check** (GET method) - health check information about the application
+- **/rest/** (PUT method) - send a new event request to the application
+- **/rest/info** (GET method) - version information about the application
+- **/rest/health-check** (GET method) - health check information about the application
 
 # Tests
 - There is a sample JMeter test available at **/etc/jmeter/LoadTest.jmx**
