@@ -80,11 +80,11 @@ public class ProcessEventIT extends AbstractTest {
 
     @Test(timeout = SIX_SECONDS)
     public void testProcessEvent() throws Exception {
+        IncomingWebSocketRequestsHandler producer = new IncomingWebSocketRequestsHandler(errorCounter);
+
         WebSocketStompClient stompClient = new WebSocketStompClient(getSockJsClient());
         stompClient.setMessageConverter(new MappingJackson2MessageConverter());
         stompClient.setTaskScheduler(new DefaultManagedTaskScheduler());
-
-        IncomingWebSocketRequestsHandler producer = new IncomingWebSocketRequestsHandler(errorCounter);
         stompClient.connect("ws://localhost:" + TOMCAT_PORT + "/events", producer);
 
         Gson gson = new Gson();
