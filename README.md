@@ -71,11 +71,21 @@ HTTP endpoint:
 - **/** or **/event-monitor** - main entry point for application
 
 REST endpoints:
--- **/rest/** (PUT method) - send a new event request to the application
--- **/rest/info** (GET method) - version information about the application
--- **/rest/health-check** (GET method) - health check information about the application
+- **/rest/** (PUT method) - send a new event request to the application
+- **/rest/info** (GET method) - version information about the application
+- **/rest/health-check** (GET method) - health check information about the application
 
 # Tests
 - There is a sample JMeter test available at **/etc/jmeter/LoadTest.jmx**
 - All unit tests are in **src/test/**.
-- Integration test is in **src/integration-test** directory. This integration test loads Spring application context into embedded Tomcat application server and runs an integration test on it.
+- Integration test is in **src/integration-test** directory. 
+This integration test loads Spring application context into embedded Tomcat application server and runs an integration test on it.
+ 
+# Technologies
+This project uses the following technologies:
+- Java 8
+- Spring
+- Spring Web Services
+- ActiveMQ
+- H2 in-memory database
+- WebSockets
