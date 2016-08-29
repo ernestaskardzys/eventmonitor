@@ -48,6 +48,10 @@ public class TomcatEmbeddedServer implements EmbeddedServer {
 
     @Override
     public void stop() throws Exception {
+        if (context != null) {
+            tomcatServer.getHost().removeChild(context);
+        }
+
         tomcatServer.stop();
     }
 
