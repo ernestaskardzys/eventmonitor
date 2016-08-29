@@ -64,6 +64,8 @@ tasks.withType(Test) {
     testLogging {
         exceptionFormat = 'full'
     }
+
+    reports.html.destination = file("${reporting.baseDir}/${name}")
 }
 
 sourceSets {
