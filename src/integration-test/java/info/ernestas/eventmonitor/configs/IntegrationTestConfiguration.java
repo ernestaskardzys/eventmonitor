@@ -4,6 +4,7 @@ import info.ernestas.eventmonitor.embedded.EmbeddedServer;
 import info.ernestas.eventmonitor.embedded.TomcatEmbeddedServer;
 import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
@@ -23,6 +24,9 @@ import java.util.List;
 public class IntegrationTestConfiguration {
 
     private static final int MAX_THREADS = 10;
+
+    @Value("${tomcat.port}")
+    private int tomcatPort;
 
     @Bean
     public SockJsClient sockJsClient() throws Exception {
@@ -49,14 +53,13 @@ public class IntegrationTestConfiguration {
 
     @Bean
     public EmbeddedServer embeddedServer() throws Exception {
-        int port = 10000;
-
         String tempDirectory = System.getProperty("java.io.tmpdir");
-        String testFolder = tempDirectory + "/tomcat." + port;
+
+        String tomcatBaseDirectory = tempDirectory + "/tomcat." + tomcatPort;
         AnnotationConfigWebApplicationContext applicationContext = new AnnotationConfigWebApplicationContext();
         applicationContext.register(WebSocketConfiguration.class);
 
-        EmbeddedServer server = new TomcatEmbeddedServer(port, testFolder);
+        EmbeddedServer server = new TomcatEmbeddedServer(tomcatPort, tomcatBaseDirectory);
         server.deployConfig(applicationContext);
         server.start();
 

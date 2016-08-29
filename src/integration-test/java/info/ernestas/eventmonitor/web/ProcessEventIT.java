@@ -11,6 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -31,8 +32,6 @@ import static org.junit.Assert.assertEquals;
 @WebAppConfiguration
 public class ProcessEventIT extends AbstractTest {
 
-    private static final int TOMCAT_PORT = 10000;
-
     private static final int TWO_SECONDS = 2000;
 
     private static final int TWO_MINUTES = 120000;
@@ -41,10 +40,13 @@ public class ProcessEventIT extends AbstractTest {
 
     private MockMvc mockMvc;
 
+    private CountDownLatch errorCounter = new CountDownLatch(NO_ERROR);
+
+    @Value("${tomcat.port}")
+    private int tomcatPort;
+
     @Autowired
     private EmbeddedServer server;
-
-    private CountDownLatch errorCounter = new CountDownLatch(NO_ERROR);
 
     @Autowired
     private WebApplicationContext webApplicationContext;
@@ -66,7 +68,7 @@ public class ProcessEventIT extends AbstractTest {
     public void testProcessEvent() throws Exception {
         IncomingWebSocketRequestsHandler producer = new IncomingWebSocketRequestsHandler(errorCounter);
 
-        webSocketStompClient.connect("ws://localhost:" + TOMCAT_PORT + "/events", producer);
+        webSocketStompClient.connect("ws://localhost:" + tomcatPort + "/events", producer);
 
         Gson gson = new Gson();
 
