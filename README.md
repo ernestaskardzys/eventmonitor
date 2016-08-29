@@ -79,3 +79,12 @@ REST endpoints:
 - There is a sample JMeter test available at **/etc/jmeter/LoadTest.jmx**
 - All unit tests are in **src/test/**.
 - Integration test is in **src/integration-test** directory. This integration test loads Spring application context into embedded Tomcat application server and runs an integration test on it.
+- 
+# Technologies
+This project uses the following technologies:
+- Java 8
+- Spring
+- Spring Web Services
+- ActiveMQ
+- H2 in-memory database
+- WebSockets
