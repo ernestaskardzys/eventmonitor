@@ -53,6 +53,8 @@ public class TomcatEmbeddedServer implements EmbeddedServer {
         }
 
         tomcatServer.stop();
+
+        tomcatServer.destroy();
     }
 
 }

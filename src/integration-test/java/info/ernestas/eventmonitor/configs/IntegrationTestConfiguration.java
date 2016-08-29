@@ -1,11 +1,14 @@
 package info.ernestas.eventmonitor.configs;
 
+import info.ernestas.eventmonitor.embedded.EmbeddedServer;
+import info.ernestas.eventmonitor.embedded.TomcatEmbeddedServer;
 import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.scheduling.concurrent.DefaultManagedTaskScheduler;
+import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 import org.springframework.web.socket.messaging.WebSocketStompClient;
 import org.springframework.web.socket.sockjs.client.JettyXhrTransport;
@@ -42,6 +45,22 @@ public class IntegrationTestConfiguration {
         stompClient.setTaskScheduler(new DefaultManagedTaskScheduler());
 
         return stompClient;
+    }
+
+    @Bean
+    public EmbeddedServer embeddedServer() throws Exception {
+        int port = 10000;
+
+        String tempDirectory = System.getProperty("java.io.tmpdir");
+        String testFolder = tempDirectory + "/tomcat." + port;
+        AnnotationConfigWebApplicationContext applicationContext = new AnnotationConfigWebApplicationContext();
+        applicationContext.register(WebSocketConfiguration.class);
+
+        EmbeddedServer server = new TomcatEmbeddedServer(port, testFolder);
+        server.deployConfig(applicationContext);
+        server.start();
+
+        return server;
     }
 
 }
