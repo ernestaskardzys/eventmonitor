@@ -38,7 +38,7 @@ public class ProcessEventIT extends AbstractTest {
 
     private static final int TWO_SECONDS = 2000;
 
-    private static final int SIX_SECONDS = 6000;
+    private static final int TWO_MINUTES = 120000;
 
     private static final int NO_ERROR = 1;
 
@@ -71,7 +71,7 @@ public class ProcessEventIT extends AbstractTest {
         server.stop();
     }
 
-    @Test(timeout = SIX_SECONDS)
+    @Test(timeout = TWO_MINUTES)
     public void testProcessEvent() throws Exception {
         IncomingWebSocketRequestsHandler producer = new IncomingWebSocketRequestsHandler(errorCounter);
 
