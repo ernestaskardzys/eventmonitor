@@ -89,3 +89,6 @@ This project uses the following technologies:
 - ActiveMQ
 - H2 in-memory database
 - WebSockets
+
+# Note
+The project works on Windows, but fails to run on Linux.
